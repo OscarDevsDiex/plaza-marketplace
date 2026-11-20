@@ -6,6 +6,11 @@ import { createDb } from '../src/lib/db/client';
 import { runMigrations } from '../src/lib/db/migrate';
 import { ensureBaseData } from '../src/lib/db/base-data';
 
+if (process.env.VERCEL && !process.env.DATABASE_URL) {
+  console.error('✗ Falta DATABASE_URL. En Vercel: Storage → Create Database → Neon, conéctala al proyecto y vuelve a desplegar.');
+  process.exit(1);
+}
+
 // Migraciones por la conexión directa si existe (Neon la expone como DATABASE_URL_UNPOOLED).
 const db = createDb({ url: process.env.DATABASE_URL_UNPOOLED || process.env.DATABASE_URL });
 await runMigrations(db, { pglite: !process.env.DATABASE_URL });
