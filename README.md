@@ -39,14 +39,26 @@ Cuentas de demostración (contraseña `Demo12345!`):
 
 > La base local (PGlite) solo admite un proceso a la vez: detén `npm run dev` antes de `db:seed` o `db:reset`.
 
-## Publicar en producción
+## Publicar gratis (Vercel + Neon)
 
-1. Crea una base PostgreSQL (Neon o Supabase tienen plan gratuito) y define `DATABASE_URL`.
-2. Define `NEXT_PUBLIC_APP_URL` con tu dominio `https://`.
-3. Ejecuta `npm run db:migrate` contra esa base (una vez por despliegue).
-4. Configura al menos un proveedor de pago (Stripe o Mercado Pago) con su secreto de webhook, y Resend para los correos. Ver `.env.example`.
-5. Programa `GET /api/cron/expirar-pedidos` cada 10–15 minutos con `CRON_SECRET`.
-6. Imágenes: en un servidor con disco persistente funciona tal cual; en Vercel/serverless agrega el driver S3/R2 (ver `docs/ARQUITECTURA.md`).
+1. En [vercel.com](https://vercel.com) entra con tu cuenta de GitHub → **Add New → Project** → importa este repositorio. **No le des "Deploy" todavía.**
+2. En **Environment Variables** agrega:
+   | Variable | Valor |
+   |---|---|
+   | `ADMIN_EMAIL` | tu correo (al registrarte con él serás administrador) |
+   | `ENABLE_SANDBOX_PAYMENTS` | `true` (pagos de prueba mientras no conectes Stripe o Mercado Pago) |
+   | `SANDBOX_SECRET` | una cadena larga aleatoria |
+   | `CRON_SECRET` | otra cadena larga aleatoria |
+3. Da **Deploy**. Fallará la primera vez porque aún no hay base de datos; es normal.
+4. En el proyecto → **Storage → Create Database → Neon** (plan gratis) → conéctala al proyecto. Esto crea `DATABASE_URL` sola.
+5. **Deployments → ⋯ → Redeploy.** Al compilar se aplican las migraciones y se crean las categorías (`npm run vercel-build`).
+6. Abre tu URL `*.vercel.app`, regístrate con tu `ADMIN_EMAIL` y listo.
+
+Notas:
+- Las fotos se guardan en la misma base de datos (no hay disco en Vercel). El plan gratis de Neon (0.5 GB) alcanza para unas 3,000 fotos.
+- Sin Resend no se envían correos: la confirmación de correo deja de ser obligatoria y no funciona "recuperar contraseña". Para activarlos agrega `RESEND_API_KEY` y `EMAIL_FROM`.
+- Para cobrar de verdad agrega las llaves de Stripe o Mercado Pago (ver `.env.example`) y quita `ENABLE_SANDBOX_PAYMENTS`.
+- Cada `git push` a `main` publica una nueva versión.
 
 ## Documentación
 
