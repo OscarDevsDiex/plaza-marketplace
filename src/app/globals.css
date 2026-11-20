@@ -1,0 +1,87 @@
+@import "tailwindcss";
+
+/*
+ * Sistema de diseño de Plaza.
+ * Tokens semánticos: usa estas clases (bg-ink, text-muted, border-line, bg-brand…) en lugar de colores sueltos.
+ * Un solo color de acento (brand) para precios en oferta, insignias y foco; el resto es escala neutra.
+ */
+@theme {
+  --color-ink: #0c0c10;
+  --color-ink-2: #3a3a42;
+  --color-muted: #6e6e78;
+  --color-faint: #a1a1aa;
+  --color-line: #e7e7ea;
+  --color-line-strong: #d4d4d8;
+  --color-subtle: #f6f6f7;
+  --color-canvas: #fbfbfa;
+  --color-surface: #ffffff;
+
+  --color-brand: #f0521e;
+  --color-brand-strong: #d43f0f;
+  --color-brand-soft: #fff1eb;
+
+  --color-success: #15803d;
+  --color-success-soft: #e7f6ec;
+  --color-warning: #b45309;
+  --color-warning-soft: #fdf3dc;
+  --color-danger: #c42b2b;
+  --color-danger-soft: #fdecec;
+  --color-info: #2453c9;
+  --color-info-soft: #e8eefc;
+  --color-star: #f2a516;
+
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+
+  --radius-xl: 14px;
+  --radius-2xl: 18px;
+
+  --shadow-card: 0 1px 2px rgb(12 12 16 / 0.05), 0 0 0 1px rgb(12 12 16 / 0.04);
+  --shadow-lift: 0 10px 30px -12px rgb(12 12 16 / 0.22), 0 2px 6px rgb(12 12 16 / 0.05);
+  --shadow-pop: 0 18px 48px -12px rgb(12 12 16 / 0.28), 0 0 0 1px rgb(12 12 16 / 0.06);
+
+  --animate-shimmer: shimmer 1.4s ease-in-out infinite;
+  --animate-fade-up: fade-up 0.35s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  --animate-pop: pop 0.25s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+
+  @keyframes shimmer {
+    0% { background-position: -400px 0; }
+    100% { background-position: 400px 0; }
+  }
+  @keyframes fade-up {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: none; }
+  }
+  @keyframes pop {
+    from { opacity: 0; transform: scale(0.97); }
+    to { opacity: 1; transform: none; }
+  }
+}
+
+@layer base {
+  html { -webkit-text-size-adjust: 100%; scroll-padding-top: 120px; }
+  body { @apply bg-canvas text-ink font-sans antialiased; font-feature-settings: "ss01", "cv11"; }
+  ::selection { @apply bg-brand/20; }
+  :focus-visible { @apply outline-2 outline-offset-2 outline-brand; }
+  h1, h2, h3 { @apply tracking-tight; }
+  input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; }
+  details > summary { list-style: none; cursor: pointer; }
+  details > summary::-webkit-details-marker { display: none; }
+}
+
+@layer components {
+  .card { @apply rounded-xl bg-surface shadow-card; }
+  .skeleton {
+    @apply rounded-md;
+    background: linear-gradient(90deg, #efeff1 0, #f7f7f8 120px, #efeff1 240px);
+    background-size: 800px 100%;
+    animation: var(--animate-shimmer);
+  }
+  .link { @apply font-medium text-ink underline decoration-line-strong underline-offset-4 transition-colors hover:decoration-ink; }
+  .scrollbar-none { scrollbar-width: none; }
+  .scrollbar-none::-webkit-scrollbar { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
+}
